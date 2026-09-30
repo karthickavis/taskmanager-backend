@@ -16,6 +16,78 @@ const createTask=async(req,res,next)=>{
     }
 
 }
+
+const getAllTask=async(req,res,next)=>{
+    try{
+        const userId=req.user.userId;
+
+        const{page=1,limit=10,status,priority}=req.query;
+
+        const tasks=await taskService.getAllTask(userId,page,limit,status,priority)
+
+        res.status(200).json({
+            message:"task fetched successfully",
+           ...tasks,
+        })
+    }catch(err){
+      next(err)
+    }
+
+}
+const getSingleTask=async(req,res,next)=>{
+    try{
+       const {taskId}=req.params;
+       const userId=req.user.userId;
+
+       const task= await taskService.getSingleTask(taskId,userId)
+
+       res.status(200).json({
+        message:"task fetch successfully",
+        task,
+       })
+    }catch(err){
+        next(err)
+    }
+}
+
+const updateTask=async(req,res,next)=>{
+    try{
+        
+         const {taskId}=req.params;
+         const userId=req.user.userId;
+         const taskData=req.body;
+
+         const updatedTask=await taskService.updateTask(taskId,userId,taskData)
+
+        
+
+         res.status(200).json({
+            message:"update task successfully",
+            updatedTask
+         })
+
+    }catch(err){
+        next(err)
+    }
+}
+
+const deleteTask=async(req,res,next)=>{
+
+    try{
+        const {taskId}=req.params;
+        const userId=req.user.userId;
+
+        const deleted=await taskService.deleteTask(taskId,userId)
+
+        res.status(200).json({
+            message:" Task deleted successfully",
+            deleted
+        })
+    }catch(err){
+        next(err)
+    }
+
+}
 module.exports={
-    createTask
+    createTask,getAllTask,getSingleTask,updateTask,deleteTask
 }
